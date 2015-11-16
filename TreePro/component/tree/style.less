@@ -1,0 +1,48 @@
+#demo{
+	// width: 100%;
+	display: inline-block;
+	height: 500px;
+	font-size: 16px;
+	// font-variant: small-caps;
+	width: 100%;
+
+	& li {
+		color:#FFF;
+	}
+
+	.parent-node{
+
+		& > span{
+			display: inline-block;
+			background: rgba(0, 150, 250, .2);
+			padding: 10px;
+			margin: 2px 5px;
+		}
+	}
+
+	ul{
+		border-left: 1px dashed rgba(0, 150, 250, .2);
+		list-style: none;
+		margin-left: 22px;
+		
+		display: inline-block;
+
+	}
+
+	.open-icon{
+		display: inline-block;
+		text-align: center;
+		width: 21px;
+		height: 21px;
+		line-height: 20px;
+		border: 2px solid rgba(0, 150, 250, 1);
+		border-radius: 100%;
+		cursor: pointer;
+	}
+
+	.append-node{
+		background: rgba(0, 150, 250, .2);
+		padding: 10px;
+		margin: 2px 5px;
+	}
+}

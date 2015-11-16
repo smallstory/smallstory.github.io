@@ -1,0 +1,49 @@
+.node {
+    cursor: pointer;
+  }
+
+  .overlay{
+      // background-color:#EEE;
+  }
+
+  .node.node-important{
+    circle {
+      stroke: red;
+    }
+  }
+   
+  .node circle {
+    fill: rgba(255, 255, 255, 0.1);
+    stroke: #00DEFF;
+    stroke-width: 1.5px;
+  }
+   
+  .node text {
+    font-size:10px; 
+    font-family:sans-serif;
+    fill: #FFF;
+  }
+   
+  .link {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.6);
+    stroke-width: 1.5px;
+  }
+
+  .templink, .addtemplink{
+    fill: none;
+    stroke: #F64747;
+    stroke-width: 3px;
+  }
+
+  .addtemplink{
+    opacity: 0.5;
+  }
+
+  .ghostCircle.show{
+      display:block;
+  }
+
+  .ghostCircle, .activeDrag .ghostCircle{
+       display: none;
+  }
