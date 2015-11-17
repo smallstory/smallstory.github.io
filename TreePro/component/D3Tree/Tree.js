@@ -17,7 +17,7 @@ define([
                 el: "body",                 // 容器
                 width: 1000,                    // 宽
                 height: 50, 
-                duration: 0,
+                duration: 1000,
                 lineHeight: 125,
                 lineWidth: 100
             };
@@ -183,6 +183,7 @@ define([
                     return "translate(" + source.y0 + "," + source.x0 + ")";
                 })
                 .on('click', click)
+                .on('dblclick', dblclick, true)
                 .on('contextmenu', d3.contextMenu(menu));
 
             nodeEnter.append("circle")
@@ -526,13 +527,19 @@ define([
         // 点击节点
         function click(d) {
             if (d3.event.defaultPrevented) return; // click suppressed
+            setCenterNode(d);
+            currentNode = d;            
+        }
+
+        function dblclick(d) {
+
+            if (d3.event.defaultPrevented) return; // click suppressed
             d = toggleChildren(d);
             renderNode(d);
-            setCenterNode(d);
-            currentNode = d;
 
-            
+            d3.event.stopPropagation();
         }
+
         instance.addNode = function (n, p) {
             if(!p) return;
 
