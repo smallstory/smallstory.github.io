@@ -17,7 +17,9 @@ define([
                 el: "body",                 // 容器
                 width: 1000,                    // 宽
                 height: 50, 
-                duration: 0
+                duration: 0,
+                lineHeight: 125,
+                lineWidth: 100
             };
 
         // Calculate total nodes, max label length
@@ -149,7 +151,7 @@ define([
             };
 
             childCount(0, root);
-            var newHeight = d3.max(levelWidth) * 25; // 25 pixels per line  
+            var newHeight = d3.max(levelWidth) * opts.lineHeight; // 25 pixels per line  
                 tree = tree.size([newHeight, opts.height]);
 
             // Compute the new tree layout.
@@ -157,10 +159,12 @@ define([
             links = tree.links(nodes);
             // Set widths between levels based on maxLabelLength.
             nodes.forEach(function(d) {
-                d.y = (d.depth * (maxLabelLength * 10)); //maxLabelLength * 10px
+                // d.y = (d.depth * (maxLabelLength * 10)); //maxLabelLength * 10px
                 // alternatively to keep a fixed scale one can set a fixed depth per level
                 // Normalize for fixed-depth by commenting out below line
                 // d.y = (d.depth * 500); //500px per level.
+
+                d.y = d.depth * opts.lineWidth;
             });
 
             // Update the nodes…
@@ -500,10 +504,10 @@ define([
             zoomListener.scale(scale);
             zoomListener.translate([x, y]);
 
-            postal.subscribe({
+            postal.publish({
                 channel: "Tree",
                 topic: "node.detail",
-                data: {}
+                data: _.cloneDeep(source)
             });
         }
 
@@ -633,6 +637,17 @@ define([
             callback: function(data) {
                 newNode.remove();
                 instance.addNode(data, linkNode);
+            }
+        });
+
+        postal.subscribe({
+            channel: "Tree",
+            topic: "node.update",
+            callback: function (data) {
+                _.findWhere(nodes, { 'id': data.node.id })[data.key] = data.node[data.key];
+
+                renderNode(root);
+                setCenterNode(_.findWhere(nodes, { 'id': data.node.id }) || root);
             }
         });
 

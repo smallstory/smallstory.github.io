@@ -17,15 +17,34 @@ define([
 		data: function () {
 			self = this;
 			return {
-				title: "_",
+				title: "节点属性",
+				node: {},
 				isShow: false
+			}
+		},
+		watch: {
+			'node.name': function (val, oldVal) {
+	            postal.publish({
+				    channel: "Tree",
+				    topic: "node.update",
+				    data: {
+				    	node: self.node,
+				    	key: "name"
+				    }
+				});
 			}
 		},
 		methods: {
 
 		},
 		ready: function () {
-			// console.log('test');
+			postal.subscribe({
+                channel: "Tree",
+                topic: "node.detail",
+                callback: function (node) {
+                	self.node = node;
+                }
+            });
 		}
 	}
 })

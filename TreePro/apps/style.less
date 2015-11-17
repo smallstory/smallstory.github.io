@@ -2,19 +2,46 @@
 @import url("../bower_components/pure/pure-min.css");
 @import url("../bower_components/d3-context-menu/css/d3-context-menu.css");
 
+html, button, input, select, textarea,
+.pure-g [class *= "pure-u"] {
+    /* Set your content font stack here: */
+    font: 12px "微软雅黑",arial,sans-serif;
+}
 
 .pure-button{
 	background-color: #37B8DC;
 	color: #FFF;
 }
 
+.pure-form{
+	input[type=text]{
+		border: 0;
+		background: rgba(255, 255, 255, 0.1);
+		box-shadow: none;
+		color: #ddd;
+	}
+	
+}
+
 .pure-panel{
 	position: relative;
-	background-color: #37B8DC;
+	background-color: rgba(255, 255, 255, 0.15);
 	color: #FFF;
 
 	.pure-panel-title{
 
+	}
+
+	.pure-panel-content{
+		
+		padding: 10px 0;
+
+		label{
+			// line-height: 
+			padding: .5em .6em;
+    		display: inline-block;
+    		margin: 0;
+		}
 	}
 
 	.pure-panel-buttons{
@@ -38,7 +65,7 @@ html, body{
 	margin: 0;
 	padding: 0;
 	color: #FFF;
-	font: 14px "微软雅黑",arial,sans-serif;
+	font: 12px "微软雅黑",arial,sans-serif;
 
 	overflow: hidden;
 }
