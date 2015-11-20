@@ -19,7 +19,8 @@ define([
                 height: 50, 
                 duration: 1000,
                 lineHeight: 150,
-                lineWidth: 150
+                lineWidth: 150,
+                type: "line"
             };
 
         // Calculate total nodes, max label length
@@ -54,6 +55,20 @@ define([
             paper.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
         });
 
+        diagonal = function (d, i) {
+            // 曲线
+            if(opts.type == "raidus") {
+                return d3.svg.diagonal()
+                    .projection(function(d) { 
+                        return [d.y, d.x]; 
+                    })(d, i)
+            }else{
+                // 直线
+                return "M" + d.source.y + "," + d.source.x
+                    + "H" + d.target.y + "V" + d.target.x;
+            }
+        }
+
         var menu = [
             {
                 title: '删除节点',
@@ -84,11 +99,6 @@ define([
             tree = d3.layout.tree()
                 .size([opts.height, opts.width])
                 .nodeSize([0, 20]);
-
-            diagonal = d3.svg.diagonal()
-                .projection(function(d) { 
-                    return [d.y, d.x]; 
-                });
 
             return instance;
         }
@@ -143,22 +153,29 @@ define([
 
             var menuList = [
                 {
-                    name: "菜单A",
-                    icon: "\uf085"
+                    name: "收起",
+                    icon: "\uf085",
+                    callback: function (d) {
+                         postal.publish({
+                            channel: "Tree",
+                            topic: "node.toggle",
+                            data: d
+                        });
+                    }
                 }, {
-                    name: "菜单B",
+                    name: "菜单",
                     icon: "\uf00b"
                 }, {
-                    name: "菜单C",
+                    name: "菜单",
                     icon: "\uf0c9"
                 }, {
-                    name: "菜单D",
+                    name: "菜单",
                     icon: "\uf073"
                 }, {
-                    name: "菜单E",
+                    name: "菜单",
                     icon: "\uf1cb"
                 }, {
-                    name: "菜单F",
+                    name: "菜单",
                     icon: "\uf1b2"
                 }
             ];
@@ -171,13 +188,26 @@ define([
                 .enter().append("g")
                 .attr("class", "menu")
                 .attr("opacity", 0)
+                .on("click", function (d) {
+                    d.callback && d.callback(node);
+                })
+                .on("mouseenter", function (d) {
+                    d3.select(this).select("text")
+                        .style("font-size", "12px")
+                        .text(d.name);
+                })
+                .on("mouseleave", function (d) {
+                    d3.select(this).select("text")
+                        .style("font-size", "16px")
+                        .text(d.icon);
+                });
 
             menu.append("circle")
                 .attr({
                     x: 0,
                     y: 0,
                     r: 18
-                })
+                });
 
             menu.append("text")
                 .attr({
@@ -423,6 +453,10 @@ define([
             });
         }
 
+        function layout () {
+
+        }
+
         function initiateDrag(d, domNode) {
             draggingNode = d;
             d3.select(domNode).select('.ghostCircle').attr('pointer-events', 'none');
@@ -555,6 +589,7 @@ define([
                 setCenterNode(draggingNode);
                 draggingNode = null;
             }
+            nodes = tree.nodes(root);
         }
 
         // Helper functions for collapsing and expanding nodes.
@@ -647,12 +682,22 @@ define([
 
         function dblclick(d) {
 
-            if (d3.event.defaultPrevented) return; // click suppressed
-            d = toggleChildren(d);
-            renderNode(d);
+            // if (d3.event.defaultPrevented) return; // click suppressed
+            // d = toggleChildren(d);
+            // renderNode(d);
 
-            d3.event.stopPropagation();
+            // d3.event.stopPropagation();
         }
+
+        // 收起节点
+        postal.subscribe({
+            channel: "Tree",
+            topic: "node.toggle",
+            callback: function (d) {
+                d = toggleChildren(d);
+                renderNode(d);
+            }
+        });
 
         instance.addNode = function (n, p) {
             if(!p) return;
@@ -769,6 +814,16 @@ define([
 
                 renderNode(root);
                 setCenterNode(_.findWhere(nodes, { 'id': data.node.id }) || root);
+            }
+        });
+
+        // 设置连线样式
+        postal.subscribe({
+            channel: "Tree",
+            topic: "opts.diagonal",
+            callback: function (type) {
+                opts.type = type;
+                renderNode(root);
             }
         });
 

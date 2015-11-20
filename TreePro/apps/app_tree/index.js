@@ -45,7 +45,19 @@ define([
 						type: "\uf1b9"
 					}
 				],
-				currentType: "\uf024"
+				currentType: "\uf024",
+				diagonal: [
+					{
+						name: "直线",
+						type: "line",
+						icon: "align-right"
+					},
+					{
+						name: "曲线",
+						type: "raidus",
+						icon: "stethoscope"
+					}
+				]
 			}
 		},
 		methods: {
@@ -83,6 +95,13 @@ define([
 				});
 				
 				// console.log('end add node');	
+			},
+			ChangeDiagonal: function (type) {
+				postal.publish({
+		            channel: "Tree",
+		            topic: "opts.diagonal",
+		            data: type
+		        });
 			}
 		},
 		components:{

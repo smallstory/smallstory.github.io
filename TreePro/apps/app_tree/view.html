@@ -9,15 +9,26 @@
 
 
 	</div> -->
+	<div class="left-panel">
+		<ul class="button-groups add-buttons">
+			<li v-repeat="types">
+				<a class="pure-button add-button" href="#" title="添加节点" v-on="mousedown: StartAddNode(type)" >
+			    	<i class="fa fa-{{ icon }}"></i>
+			    	<span>{{ name }}</span>
+			    </a>
+			</li>
+		</ul>
 
-	<ul class="button-groups">
-		<li v-repeat="types">
-			<a class="pure-button add-button" href="#" title="添加节点" v-on="mousedown: StartAddNode(type)" >
-		    	<i class="fa fa-{{ icon }}"></i>
-		    	<span>{{ name }}</span>
-		    </a>
-		</li>
-	</ul>
+		<ul class="button-groups">
+			<li v-repeat="diagonal">
+				<a class="pure-button add-button" href="#" title="添加节点" v-on="click: ChangeDiagonal(type)" >
+			    	<i class="fa fa-{{ icon }}"></i>
+			    	<span>{{ name }}</span>
+			    </a>
+			</li>
+		</ul>
+	</div>
+	
     
     <detail></detail>
 </div>
