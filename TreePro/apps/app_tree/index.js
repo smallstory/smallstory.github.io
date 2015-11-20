@@ -22,22 +22,39 @@ define([
 		data: function () {
 			self = this;
 			return {
-				isDrag: false
+				isDrag: false,
+				types: [
+					{
+						name: "节点类型A",
+						icon: "flag",
+						type: "\uf024",
+					},
+					{
+						name: "节点类型B",
+						icon: "male",
+						type: "\uf183"
+					},
+					{
+						name: "节点类型C",
+						icon: "home",
+						type: "\uf015"
+					},
+					{
+						name: "节点类型D",
+						icon: "automobile",
+						type: "\uf1b9"
+					}
+				],
+				currentType: "\uf024"
 			}
 		},
 		methods: {
-			StartAddNode: function (event) {
-				this.isDrag = true
+			StartAddNode: function (type) {
+				this.currentType = type;
+				this.isDrag = true;
 				postal.publish({
 				    channel: "Tree",
-				    topic: "node.dragstart",
-				    data: {
-				    	event: event,
-				    	node: {
-					        name: "新节点",
-					        children: []
-					    }
-				    }
+				    topic: "node.dragstart"
 				});
 				// console.log('start add node');
 			},
@@ -59,6 +76,7 @@ define([
 				    topic: "node.dragend",
 				    data: {
 				        name: "新节点",
+				        type: this.currentType,
 				        style: "node-important",
 				        children: []
 				    }

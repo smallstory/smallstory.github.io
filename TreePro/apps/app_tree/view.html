@@ -1,6 +1,23 @@
 <div class="app-tree" v-on="mousemove: DragAddNode, mouseup: EndAddNode">
     <!-- <tree></tree> -->
     <d3-tree></d3-tree>
-    <a class="pure-button add-button" href="#" title="添加节点" v-on="mousedown: StartAddNode"><i class="fa fa-plus"></i></a>
+<!-- 	<div class="button-groups">
+		<a class="pure-button add-button" href="#" title="添加节点" v-on="mousedown: StartAddNode(type)" v-repeat="types">
+	    	<i class="fa fa-{{ icon }}"></i>
+	    	<span>{{ name }}</span>
+	    </a>
+
+
+	</div> -->
+
+	<ul class="button-groups">
+		<li v-repeat="types">
+			<a class="pure-button add-button" href="#" title="添加节点" v-on="mousedown: StartAddNode(type)" >
+		    	<i class="fa fa-{{ icon }}"></i>
+		    	<span>{{ name }}</span>
+		    </a>
+		</li>
+	</ul>
+    
     <detail></detail>
 </div>

@@ -18,8 +18,8 @@ define([
                 width: 1000,                    // 宽
                 height: 50, 
                 duration: 1000,
-                lineHeight: 125,
-                lineWidth: 100
+                lineHeight: 150,
+                lineWidth: 150
             };
 
         // Calculate total nodes, max label length
@@ -76,6 +76,9 @@ define([
                     height: opts.height
                 })
                 .attr("class", "overlay")
+                .on("click", function () {
+                    closeMenu();
+                })
                 .call(zoomListener);
                 
             tree = d3.layout.tree()
@@ -93,6 +96,7 @@ define([
         instance.data = function (d) {
             data = d || {
                 name: "新节点",
+                type: "\uf041",
                 style: "node-default"
             };
 
@@ -128,12 +132,101 @@ define([
             
             renderNode(root);
             setCenterNode(root);
-
             return instance;
+        }
+
+        function renderMenu (node) {
+            closeMenu();
+            var menuGroup = paper.append("g")
+                .attr("id", "menuGroup")
+                .attr("transform", "translate(" + (node.y0) + "," + node.x0 + ")");
+
+            var menuList = [
+                {
+                    name: "菜单A",
+                    icon: "\uf085"
+                }, {
+                    name: "菜单B",
+                    icon: "\uf00b"
+                }, {
+                    name: "菜单C",
+                    icon: "\uf0c9"
+                }, {
+                    name: "菜单D",
+                    icon: "\uf073"
+                }, {
+                    name: "菜单E",
+                    icon: "\uf1cb"
+                }, {
+                    name: "菜单F",
+                    icon: "\uf1b2"
+                }
+            ];
+
+            var radius = 70;
+            var inter = Math.PI / menuList.length;
+
+            var menu = menuGroup.selectAll(".menu")
+                .data(menuList)
+                .enter().append("g")
+                .attr("class", "menu")
+                .attr("opacity", 0)
+
+            menu.append("circle")
+                .attr({
+                    x: 0,
+                    y: 0,
+                    r: 18
+                })
+
+            menu.append("text")
+                .attr({
+                    x: 0,
+                    dy: 1
+                })
+                .text(function (d) {
+                    return d.icon;
+                });
+            
+            menu.transition()
+                .duration(opts.duration / 2)
+                .tween("", function (d, i) {
+                    var n = d3.select(this),
+                        interpolate = d3.interpolate(0, radius);
+
+                    var deg = inter * i - Math.PI / 2;
+                    return function (t) {
+                        n.attr({
+                            transform: "translate(" + Math.cos(deg) * interpolate(t) + "," + Math.sin(deg) * interpolate(t) + ")",
+                            opacity: t
+                        });
+                    }
+
+                })
+
+        }
+
+        function closeMenu () {
+            var menuGroup = d3.select("#menuGroup");
+
+            menuGroup.selectAll(".menu")
+                .transition()
+                .duration(opts.duration / 2)
+                .tween("", function (d, i) {
+                    var n = d3.select(this);
+                    return function (t) {
+                        n.attr("opacity", 1 - t);
+                        if(t == 1){
+                            menuGroup.remove();
+                        }
+                    }
+                });
         }
 
         // 绘制节点
         function renderNode(source) {
+            closeMenu();
+
             // Compute the new height, function counts total children of root node and sets tree height accordingly.
             // This prevents the layout looking squashed when new nodes are made visible or looking sparse when nodes are removed
             // This makes the layout more consistent.
@@ -186,21 +279,37 @@ define([
                 .on('dblclick', dblclick, true)
                 .on('contextmenu', d3.contextMenu(menu));
 
-            nodeEnter.append("circle")
+            // nodeEnter.append("circle")
+            //     .attr('class', 'nodeCircle')
+            //     .attr("r", 0)
+            //     .style("fill", function(d) {
+            //         return d._children ? "lightsteelblue" : "rgba(255, 255, 255, 0.2)";
+            //     });
+
+            nodeEnter.append("text")
                 .attr('class', 'nodeCircle')
-                .attr("r", 0)
-                .style("fill", function(d) {
-                    return d._children ? "lightsteelblue" : "rgba(255, 255, 255, 0.2)";
-                });
+                .attr("x", function(d) {
+                    return 0;
+                })
+                .attr("dy", "-.35em")
+                .attr("text-anchor", function(d) {
+                    return "middle";
+                })
+                .text(function(d) {
+                    return d.type;
+                })
+
 
             nodeEnter.append("text")
                 .attr("x", function(d) {
-                    return d.children || d._children ? -10 : 10;
+                    // return d.children || d._children ? -10 : 10;
+                    return 0;
                 })
-                .attr("dy", ".35em")
+                .attr("dy", "1.2em")
                 .attr('class', 'nodeText')
                 .attr("text-anchor", function(d) {
-                    return d.children || d._children ? "end" : "start";
+                    // return d.children || d._children ? "end" : "start";
+                    return "middle";
                 })
                 .text(function(d) {
                     return d.name;
@@ -222,12 +331,14 @@ define([
                 });
 
             // Update the text to reflect whether node has children or not.
-            node.select('text')
+            node.select('.nodeText')
                 .attr("x", function(d) {
-                    return d.children || d._children ? -10 : 10;
+                    // return d.children || d._children ? -10 : 10;
+                    return 0;
                 })
                 .attr("text-anchor", function(d) {
-                    return d.children || d._children ? "end" : "start";
+                    // return d.children || d._children ? "end" : "start";
+                    return "middle";
                 })
                 .text(function(d) {
                     return d.name;
@@ -248,7 +359,7 @@ define([
                 });
 
             // Fade the text in
-            nodeUpdate.select("text")
+            nodeUpdate.select(".nodeText")
                 .style("fill-opacity", 1);
 
             // Transition exiting nodes to the parent's new position.
@@ -527,8 +638,11 @@ define([
         // 点击节点
         function click(d) {
             if (d3.event.defaultPrevented) return; // click suppressed
-            setCenterNode(d);
-            currentNode = d;            
+            // setCenterNode(d);
+            // currentNode = d;          
+
+            renderMenu(d);
+            d3.event.stopPropagation();
         }
 
         function dblclick(d) {
@@ -573,7 +687,7 @@ define([
         postal.subscribe({
             channel: "Tree",
             topic: "node.dragstart",
-            callback: function(data) {
+            callback: function() {
                 newNode = paper.append("g")
                     .attr("class", "node");
 
