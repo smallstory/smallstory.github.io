@@ -10,25 +10,51 @@
 
 	</div> -->
 	<div class="left-panel">
-		<ul class="button-groups add-buttons">
-			<li v-repeat="types">
-				<a class="pure-button add-button" href="#" title="添加节点" v-on="mousedown: StartAddNode(type)" >
-			    	<i class="fa fa-{{ icon }}"></i>
-			    	<span>{{ name }}</span>
-			    </a>
+		<div class="logo">
+			<span class="logo-text">T</span>
+			<span class="logo-text">R</span>
+			<span class="logo-text">E</span>
+			<span class="logo-text">E</span>
+			<div class="label">
+				V0.1
+			</div>
+		</div>
+		<ul class="menu">
+			<li>
+				<h4>添加节点</h4>
+				<ul class="button-groups add-buttons">
+					<li v-repeat="types">
+						<a class="pure-button add-button" href="#" title="添加节点" v-on="mousedown: StartAddNode(type)" >
+					    	<i class="fa fa-{{ icon }}"></i>
+					    	<span>{{ name }}</span>
+					    </a>
+					</li>
+				</ul>
 			</li>
-		</ul>
-
-		<ul class="button-groups">
-			<li v-repeat="diagonal">
-				<a class="pure-button add-button" href="#" title="添加节点" v-on="click: ChangeDiagonal(type)" >
-			    	<i class="fa fa-{{ icon }}"></i>
-			    	<span>{{ name }}</span>
-			    </a>
-			</li>
+			<li>
+				<h4>连线方式</h4>
+				<div class="pure-g">
+					<div class="pure-u-1-{{ diagonal.length }}" v-repeat="diagonal">
+						<a class="pure-button add-button" href="#" title="添加节点" v-on="click: ChangeDiagonal(type)" >
+					    	<i class="fa fa-{{ icon }}"></i>
+					    	<span>{{ name }}</span>
+					    </a>
+					</div>
+				</div>
+			</li>
 		</ul>
 	</div>
 	
+	<div class="right-panel">
+		<detail></detail>
+	</div>
     
-    <detail></detail>
+    <div class="model-dialog" id="fpDialog" v-on="click: CloseFp()">
+    	<div class="fp">
+    		<a href="#" class="pure-button close-btn">
+    			<i class="fa fa-times"></i>
+    		</a>
+    		发票信息
+    	</div>
+    </div>
 </div>

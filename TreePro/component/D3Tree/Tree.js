@@ -20,12 +20,11 @@ define([
                 duration: 1000,
                 lineHeight: 150,
                 lineWidth: 150,
-                type: "line"
+                type: "raidus"
             };
 
         // Calculate total nodes, max label length
         var totalNodes = 0;
-        var maxLabelLength = 0;
         // variables for drag/drop
         var selectedNode = null;
         var draggingNode = null;
@@ -59,8 +58,8 @@ define([
             // 曲线
             if(opts.type == "raidus") {
                 return d3.svg.diagonal()
-                    .projection(function(d) { 
-                        return [d.y, d.x]; 
+                    .projection(function(d, i) { 
+                        return [d.y + (1.5 - i) * 10, d.x]; 
                     })(d, i)
             }else{
                 // 直线
@@ -112,22 +111,6 @@ define([
 
             originalData = $.extend({}, data, {});
 
-            // 递归计算节点数和文字标签最大长度
-            (function visit(d) {
-                if (!d) return;
-
-                totalNodes++;
-                maxLabelLength = Math.max(d.name.length, maxLabelLength);
-
-                var children = d.children && d.children.length > 0 ? d.children : null;
-                if (children) {
-                    var count = children.length;
-                    for (var i = 0; i < count; i++) {
-                        visit(children[i]);
-                    }
-                }
-            })(data);
-
             root = data;
             root.x0 = opts.height / 2;
             root.y0 = 0;
@@ -145,7 +128,9 @@ define([
             return instance;
         }
 
-        function renderMenu (node) {
+        function renderMenu (node, dom) {
+            var node = findNode(node.id, node.depth, root);
+
             closeMenu();
             var menuGroup = paper.append("g")
                 .attr("id", "menuGroup")
@@ -153,34 +138,55 @@ define([
 
             var menuList = [
                 {
+                    type: "isExtend",
                     name: "收起",
-                    icon: "\uf085",
+                    _name: "展开",
+                    icon: "\uf066",
+                    _icon: "\uf065",
                     callback: function (d) {
-                         postal.publish({
+                        node.isExtend = !node.isExtend;
+                        postal.publish({
                             channel: "Tree",
                             topic: "node.toggle",
                             data: d
                         });
                     }
                 }, {
-                    name: "菜单",
-                    icon: "\uf00b"
+                    type: "isLock",
+                    name: "锁定",
+                    _name: "解锁",
+                    icon: "\uf13e",
+                    _icon: "\uf023",
+                    callback: function (d) {
+                        node.isLock = !node.isLock;
+                        d3.select(dom).style("opacity", node.isLock ? 0.5 : 1 );
+                    }
                 }, {
-                    name: "菜单",
-                    icon: "\uf0c9"
-                }, {
-                    name: "菜单",
-                    icon: "\uf073"
-                }, {
-                    name: "菜单",
+                    name: "模型",
                     icon: "\uf1cb"
                 }, {
-                    name: "菜单",
-                    icon: "\uf1b2"
+                    name: "支撑",
+                    icon: "\uf102",
+                    callback: function (d) {
+                        postal.publish({
+                            channel: "Tree",
+                            topic: "node.showFp",
+                            data: d
+                        });
+                    }
+                }, {
+                    name: "说明",
+                    icon: "\uf129"
+                }, {
+                    name: "计算",
+                    icon: "\uf1ec"
+                }, {
+                    name: "表格",
+                    icon: "\uf1c3"
                 }
             ];
 
-            var radius = 70;
+            var radius = 80;
             var inter = Math.PI / menuList.length;
 
             var menu = menuGroup.selectAll(".menu")
@@ -194,12 +200,12 @@ define([
                 .on("mouseenter", function (d) {
                     d3.select(this).select("text")
                         .style("font-size", "12px")
-                        .text(d.name);
+                        .text(d.type ? (node[d.type] ? d._name : d.name) : d.name);
                 })
                 .on("mouseleave", function (d) {
                     d3.select(this).select("text")
                         .style("font-size", "16px")
-                        .text(d.icon);
+                        .text(d.type ? (node[d.type] ? d._icon : d.icon) : d.icon);
                 });
 
             menu.append("circle")
@@ -215,7 +221,7 @@ define([
                     dy: 1
                 })
                 .text(function (d) {
-                    return d.icon;
+                    return d.type ? (node[d.type] ? d._icon : d.icon) : d.icon;
                 });
             
             menu.transition()
@@ -280,6 +286,7 @@ define([
             // Compute the new tree layout.
             nodes = tree.nodes(root).reverse();
             links = tree.links(nodes);
+
             // Set widths between levels based on maxLabelLength.
             nodes.forEach(function(d) {
                 // d.y = (d.depth * (maxLabelLength * 10)); //maxLabelLength * 10px
@@ -293,7 +300,7 @@ define([
             // Update the nodes…
             var node = paper.selectAll("g.node")
                 .data(nodes, function(d) {
-                    return d.id || (d.id = ++i);
+                    return d.id || (d.id = guid());
                 });
 
             // Enter any new nodes at the parent's previous position.
@@ -304,6 +311,9 @@ define([
                 })
                 .attr("transform", function(d) {
                     return "translate(" + source.y0 + "," + source.x0 + ")";
+                })
+                .style("opacity", function (d) {
+                    return d.isLock ? 0.5 : 1; 
                 })
                 .on('click', click)
                 .on('dblclick', dblclick, true)
@@ -643,7 +653,7 @@ define([
             var scale = zoomListener.scale();
             var x = -source.y0;
             var y = -source.x0;
-            x = x * scale + opts.width / 2;
+            x = x * scale + opts.width / 2 + 80;
             y = y * scale + opts.height / 2;
             d3.select('g').transition()
                 .duration(opts.duration)
@@ -667,6 +677,9 @@ define([
                 d.children = d._children;
                 d._children = null;
             }
+
+            setCenterNode(d);
+
             return d;
         }
 
@@ -674,9 +687,8 @@ define([
         function click(d) {
             if (d3.event.defaultPrevented) return; // click suppressed
             // setCenterNode(d);
-            // currentNode = d;          
-
-            renderMenu(d);
+            // currentNode = d;
+            renderMenu(d, this);
             d3.event.stopPropagation();
         }
 
@@ -686,7 +698,7 @@ define([
             // d = toggleChildren(d);
             // renderNode(d);
 
-            // d3.event.stopPropagation();
+            d3.event.stopPropagation();
         }
 
         // 收起节点
@@ -702,9 +714,16 @@ define([
         instance.addNode = function (n, p) {
             if(!p) return;
 
-            n.id = nodes.length + 1;
+            n.id = guid();
             p.parent = p;
+
+            if(p._children){
+                p.children = p._children;
+                p._children = null;
+            }
+
             p.children ? p.children.push(n) : p.children = [n];
+
             nodes.push(n);
 
             renderNode(root);
@@ -826,6 +845,32 @@ define([
                 renderNode(root);
             }
         });
+
+        function findNode (id, depth, source) {
+            
+            if(depth == 0) return source;
+
+            var result = null;
+            for (var i = 0, d; d = source.children[i]; i++) {
+                if(d.depth < depth) {
+                    result = d.children && findNode(id, depth, d);
+                }else if(d.depth == depth && id == d.id) {
+                    return d;
+                }
+            }
+
+            return result;
+        }
+
+        function guid() {
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            }
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+                s4() + '-' + s4() + s4() + s4();
+        }
 
         return instance;
     }

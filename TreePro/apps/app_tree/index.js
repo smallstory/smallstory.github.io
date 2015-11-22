@@ -57,7 +57,7 @@ define([
 						type: "raidus",
 						icon: "stethoscope"
 					}
-				]
+				],
 			}
 		},
 		methods: {
@@ -102,11 +102,23 @@ define([
 		            topic: "opts.diagonal",
 		            data: type
 		        });
+			},
+			CloseFp: function () {
+				$("#fpDialog").hide();
 			}
 		},
 		components:{
 			D3Tree: D3Tree,
 			detail: Detail
 		},
+		ready: function () {
+            postal.subscribe({
+	            channel: "Tree",
+	            topic: "node.showFp",
+	            callback: function (d) {
+	                $("#fpDialog").show();
+	            }
+	        });
+		}
 	}
 })

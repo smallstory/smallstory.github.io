@@ -1,21 +1,110 @@
+
+.text-border(@color, @x: 2px, @y: 1px) {
+	text-shadow: 
+		@x 0 0 @color, -@x 0 0 @color, 
+		0 @x 0 @color, 0 -@x 0 @color, 
+		@y @y @color, -@y -@y 0 @color, 
+		@y -@y 0 @color, -@y @y 0 @color;
+}
+
 .app-tree{
 	.left-panel{
 		position: absolute;
-		top: 10px;
-		left: 10px;
-		.button-groups{
-			.add-button{
+		top: 0;
+		left: 0;
+		bottom: 0;
+		width: 160px;
+		background: #252635;
+		padding: 10px;
+		.logo{
+			position: relative;
+			text-align: center;
+			span.logo-text{
+				text-align: center;
+				font-size: 30px;
+				color: #52B3D9;
 				
-				margin: 1px 0;
-				border-radius: 0;
+				.text-border(rgba(0, 0, 0, 0.1));
+
+				&:nth-child(even){
+					color: #0cc2aa;
+				}
+			}
+
+			.label{
+				position: absolute;
+				font-size: 10px;
+				background: #0cc2aa;
+				color: rgba(255,255,255,.87);
+				padding: 3px;
+				border-radius: 1px 3px;
+				display: inline-block;
+				transform: scale(.7,.7);
 			}
 		}
 
-		.add-buttons{
-			.add-button{
-				width: 100px;
+		.menu{
+			li{
+				h4{
+					color: #999;
+					font-weight: normal;
+				}
 			}
+		}
+
+		.button-groups{
+			.add-button{
+				width: 100%;
+				
+			}
+		}
+
+		.add-button{
+			width: 100%;
+			margin: 1px;
+			border-radius: 0;
+			color: rgba(255,255,255,.87);
 		}
 	}
 	
+	.right-panel{
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 300px;
+
+	}
+
+	.model-dialog{
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.7);
+		text-align: center;
+		display: none;
+		.fp{
+			background: rgba(255, 255, 255, .1);
+			width: 600px;
+			height: 400px;
+			margin: 100px auto 0;
+			position: relative;
+			padding: 20px;
+
+			.close-btn{
+				position: absolute;
+				top: 0;
+				right: 0;
+				background: rgba(0, 0, 0, 0.6);
+				color: #FFF;
+				font-size: 16px;
+				border-radius: 0;
+				&:hover{
+					background: #000;
+				}
+			}
+		}
+	}
 }
