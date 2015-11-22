@@ -863,6 +863,26 @@ define([
             }
         });
 
+        // 设置连线样式
+        postal.subscribe({
+            channel: "Tree",
+            topic: "opts.lineHeight",
+            callback: function (lineHeight) {
+                opts.lineHeight = lineHeight;
+                renderNode(root);
+            }
+        });
+
+        // 设置连线样式
+        postal.subscribe({
+            channel: "Tree",
+            topic: "opts.lineWidth",
+            callback: function (lineWidth) {
+                opts.lineWidth = lineWidth;
+                renderNode(root);
+            }
+        });
+
         function findNode (id, depth, source) {
             
             if(depth == 0) return source;

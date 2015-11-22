@@ -69,8 +69,11 @@ define([
 						type: "node-space-v",
 						value: 150
 					}
-				]
+				],
 			}
+		},
+		watch: {
+
 		},
 		methods: {
 			StartAddNode: function (type) {
