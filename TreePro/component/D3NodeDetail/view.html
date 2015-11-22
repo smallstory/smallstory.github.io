@@ -1,16 +1,46 @@
-<div class="detail-panel">
-	<div class="pure-panel-title">{{ title }}</div>
-<!-- 	<div class="pure-panel-buttons">
-		<a class="" href="#" title="最小化"><i class="fa fa-{{ isShow ? 'minus' : 'plus' }}"></i></a>
-	</div> -->
-	<div class="pure-panel-content pure-form">
-		<div class="pure-g">
-			<div class="pure-u-1-3">
-				<label for="">节点名称</label>
-		    </div>
-		    <div class="pure-u-2-3">
-		        <input class="pure-input-1" type="text" v-model="node.name">
-		    </div>
-		</div>
-	</div>
+<div id="detailPanel" class="detail-panel">
+	<a href="#" class="pure-button close-btn" v-on="click: ClosePanel()">
+		<i class="fa fa-times"></i>
+	</a>
+	
+	<ul class="menu">
+		<li>
+			<h4>节点名称</h4>
+			<form class="pure-form pure-form-stacked">
+			    <fieldset>
+			        <div class="group-input">
+			        	<label for="{{ type }}">名称</label>
+			        	 <input class="pure-input-1" type="text" v-model="node.name">
+			        </div>
+			    </fieldset>
+			</form>
+		</li>
+		<li>
+			<h4>其他信息</h4>
+			<form class="pure-form pure-form-stacked">
+			    <fieldset>
+			        <div class="group-input">
+			        	<label>名称</label>
+			        	 <input class="pure-input-1" type="text" v-model="form.name">
+			        </div>
+			        <div class="group-input">
+			        	<label>规格</label>
+			        	 <input class="pure-input-1" type="text" v-model="form.name">
+			        </div>
+			        <div class="group-input">
+			        	<label>型号</label>
+			        	 <input class="pure-input-1" type="text" v-model="form.name">
+			        </div>
+			        <div class="group-input">
+			        	<label>单价</label>
+			        	 <input class="pure-input-1" type="text" v-model="form.name">
+			        </div>
+			        <div class="group-input">
+			        	<label>金额</label>
+			        	 <input class="pure-input-1" type="text" v-model="form.name">
+			        </div>
+			    </fieldset>
+			</form>
+		</li>
+	</ul>
 </div>

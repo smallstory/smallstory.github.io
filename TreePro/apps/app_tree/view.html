@@ -9,7 +9,7 @@
 
 
 	</div> -->
-	<div class="left-panel">
+	<div class="panel left-panel">
 		<div class="logo">
 			<span class="logo-text">T</span>
 			<span class="logo-text">R</span>
@@ -41,11 +41,23 @@
 					    </a>
 					</div>
 				</div>
-			</li>
+			</li>
+			<li>
+				<h4>节点间距</h4>
+				<form class="pure-form pure-form-stacked">
+				    <fieldset>
+
+				        <div class="group-input" v-repeat="nodeSpace">
+				        	<label for="{{ type }}">{{ name }}</label>
+				        	<input id="{{ type }}" type="text" placeholder="{{ name }}" value="{{ value }}">
+				        </div>
+				    </fieldset>
+				</form>
+			</li>
 		</ul>
 	</div>
 	
-	<div class="right-panel">
+	<div class="panel right-panel">
 		<detail></detail>
 	</div>
     

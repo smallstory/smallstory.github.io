@@ -50,7 +50,7 @@ define([
         
         var domNode;
         // 定义画布缩放事件
-        var zoomListener = d3.behavior.zoom().scaleExtent([0.1, 3]).on("zoom", function () {
+        var zoomListener = d3.behavior.zoom().scaleExtent([0.5, 3]).on("zoom", function () {
             paper.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
         });
 
@@ -92,6 +92,10 @@ define([
                 .attr("class", "overlay")
                 .on("click", function () {
                     closeMenu();
+                    postal.publish({
+                        channel: "Tree",
+                        topic: "node.detailClose"
+                    });
                 })
                 .call(zoomListener);
                 
@@ -130,7 +134,6 @@ define([
 
         function renderMenu (node, dom) {
             var node = findNode(node.id, node.depth, root);
-
             closeMenu();
             var menuGroup = paper.append("g")
                 .attr("id", "menuGroup")
@@ -317,7 +320,12 @@ define([
                 })
                 .on('click', click)
                 .on('dblclick', dblclick, true)
-                .on('contextmenu', d3.contextMenu(menu));
+                .on('contextmenu',function (d) {
+                    renderMenu(d, this);
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
+                });
+                // .on('contextmenu', d3.contextMenu(menu));
 
             // nodeEnter.append("circle")
             //     .attr('class', 'nodeCircle')
@@ -596,7 +604,7 @@ define([
             updateTempConnector();
             if (draggingNode !== null) {
                 renderNode(root);
-                setCenterNode(draggingNode);
+                // setCenterNode(draggingNode);
                 draggingNode = null;
             }
             nodes = tree.nodes(root);
@@ -653,8 +661,12 @@ define([
             var scale = zoomListener.scale();
             var x = -source.y0;
             var y = -source.x0;
-            x = x * scale + opts.width / 2 + 80;
-            y = y * scale + opts.height / 2;
+            // x = x * scale + opts.width / 2 + 80;
+            // y = y * scale + opts.height / 2;
+
+            x = x * scale + 300;
+            y = y * scale + 150;            
+
             d3.select('g').transition()
                 .duration(opts.duration)
                 .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
@@ -678,7 +690,7 @@ define([
                 d._children = null;
             }
 
-            setCenterNode(d);
+            // setCenterNode(d);
 
             return d;
         }
@@ -688,7 +700,12 @@ define([
             if (d3.event.defaultPrevented) return; // click suppressed
             // setCenterNode(d);
             // currentNode = d;
-            renderMenu(d, this);
+            // renderMenu(d, this);
+            postal.publish({
+                channel: "Tree",
+                topic: "node.detail",
+                data: _.cloneDeep(d)
+            });
             d3.event.stopPropagation();
         }
 
@@ -727,7 +744,7 @@ define([
             nodes.push(n);
 
             renderNode(root);
-            setCenterNode(_.findWhere(nodes, { 'id': n.id }) || root);
+            // setCenterNode(_.findWhere(nodes, { 'id': n.id }) || root);
 
             return instance;
         }
@@ -832,7 +849,7 @@ define([
                 _.findWhere(nodes, { 'id': data.node.id })[data.key] = data.node[data.key];
 
                 renderNode(root);
-                setCenterNode(_.findWhere(nodes, { 'id': data.node.id }) || root);
+                // setCenterNode(_.findWhere(nodes, { 'id': data.node.id }) || root);
             }
         });
 
@@ -853,7 +870,8 @@ define([
             var result = null;
             for (var i = 0, d; d = source.children[i]; i++) {
                 if(d.depth < depth) {
-                    result = d.children && findNode(id, depth, d);
+                    var _result = d.children && findNode(id, depth, d);
+                    if(_result != null) result = _result;
                 }else if(d.depth == depth && id == d.id) {
                     return d;
                 }

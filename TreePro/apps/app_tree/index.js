@@ -58,6 +58,18 @@ define([
 						icon: "stethoscope"
 					}
 				],
+				nodeSpace: [
+					{
+						name: "水平",
+						type: "node-space-h",
+						value: 150
+					},
+					{
+						name: "垂直",
+						type: "node-space-v",
+						value: 150
+					}
+				]
 			}
 		},
 		methods: {

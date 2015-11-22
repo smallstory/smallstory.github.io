@@ -19,7 +19,11 @@ define([
 			return {
 				title: "节点属性",
 				node: {},
-				isShow: false
+				isShow: false,
+				form: {
+					name: "",
+					value: "",
+				}
 			}
 		},
 		watch: {
@@ -35,7 +39,9 @@ define([
 			}
 		},
 		methods: {
-
+			ClosePanel: function () {
+				$("#detailPanel").hide();
+			}
 		},
 		ready: function () {
 			postal.subscribe({
@@ -43,8 +49,18 @@ define([
                 topic: "node.detail",
                 callback: function (node) {
                 	self.node = node;
+                	$("#detailPanel").show();
                 }
             });
+
+            postal.subscribe({
+                channel: "Tree",
+                topic: "node.detailClose",
+                callback: function (node) {
+                	$("#detailPanel").hide();
+                }
+            });
+
 		}
 	}
 })

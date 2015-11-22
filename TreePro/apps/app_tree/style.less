@@ -8,6 +8,18 @@
 }
 
 .app-tree{
+	.panel{
+		.menu{
+			cursor: default;
+			li{
+				h4{
+					color: #999;
+					font-weight: normal;
+				}
+			}
+		}
+	}
+
 	.left-panel{
 		position: absolute;
 		top: 0;
@@ -40,15 +52,6 @@
 				border-radius: 1px 3px;
 				display: inline-block;
 				transform: scale(.7,.7);
-			}
-		}
-
-		.menu{
-			li{
-				h4{
-					color: #999;
-					font-weight: normal;
-				}
 			}
 		}
 
@@ -93,18 +96,20 @@
 			position: relative;
 			padding: 20px;
 
-			.close-btn{
-				position: absolute;
-				top: 0;
-				right: 0;
-				background: rgba(0, 0, 0, 0.6);
-				color: #FFF;
-				font-size: 16px;
-				border-radius: 0;
-				&:hover{
-					background: #000;
-				}
-			}
+			
 		}
+	}
+}
+
+.close-btn{
+	position: absolute;
+	top: 0;
+	right: 0;
+	background: rgba(0, 0, 0, 0.4);
+	color: #FFF;
+	font-size: 14px;
+	border-radius: 0;
+	&:hover{
+		background: #0cc2aa;
 	}
 }
