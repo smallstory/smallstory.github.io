@@ -1,4 +1,4 @@
-<div id="detailPanel" class="detail-panel">
+<div id="detailPanel" class="panel detail-panel">
 	<a href="#" class="pure-button close-btn" v-on="click: ClosePanel()">
 		<i class="fa fa-times"></i>
 	</a>
@@ -41,6 +41,26 @@
 			        </div>
 			    </fieldset>
 			</form>
+		</li>
+	</ul>
+	
+	<div class="pure-u-1-{{ diagonal.length }}" v-repeat="diagonal">
+						<a class="pure-button add-button" href="#" title="添加节点" v-on="click: ChangeDiagonal(type)" >
+					    	<i class="fa fa-{{ icon }}"></i>
+					    	<span>{{ name }}</span>
+					    </a>
+					</div>
+
+	<ul class="pure-g button-group">
+		<li class="pure-u-1-2">
+			<a class="pure-button add-button" href="#" title="确定">
+		    	确定
+		    </a>
+		</li>
+		<li class="pure-u-1-2">
+			<a class="pure-button add-button" href="#" title="取消">
+		    	取消
+		    </a>
 		</li>
 	</ul>
 </div>

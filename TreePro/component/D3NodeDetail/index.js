@@ -47,8 +47,13 @@ define([
 			postal.subscribe({
                 channel: "Tree",
                 topic: "node.detail",
-                callback: function (node) {
-                	self.node = node;
+                callback: function (d) {
+                	var event = d3.event;
+                	self.node = d.node;
+                	$("#detailPanel").css({
+                		top: event.y + 10,
+                		left: event.x + 10
+                	})
                 	$("#detailPanel").show();
                 }
             });

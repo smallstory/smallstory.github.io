@@ -18,8 +18,8 @@ define([
                 width: 1000,                    // 宽
                 height: 50, 
                 duration: 1000,
-                lineHeight: 150,
-                lineWidth: 150,
+                lineHeight: 100,
+                lineWidth: 120,
                 type: "raidus"
             };
 
@@ -345,7 +345,26 @@ define([
                 })
                 .text(function(d) {
                     return d.type;
+                });
+
+             nodeEnter.append("circle")
+                .attr('class', 'nodeExtand')
+                .attr("cx", function(d) {
+                    return 10;
                 })
+                .attr("cy", function(d) {
+                    return -5;
+                })
+                .attr("r", 2)
+                .attr("opacity", function (d) {
+                    return d._children ? 1 : 0;
+                })
+                .attr("fill", function (d) {
+                    // console.log(d);
+
+                    // return ;
+                });
+
 
 
             nodeEnter.append("text")
@@ -673,11 +692,11 @@ define([
             zoomListener.scale(scale);
             zoomListener.translate([x, y]);
 
-            postal.publish({
-                channel: "Tree",
-                topic: "node.detail",
-                data: _.cloneDeep(source)
-            });
+            // postal.publish({
+            //     channel: "Tree",
+            //     topic: "node.detail",
+            //     data: _.cloneDeep(source)
+            // });
         }
 
         // 展开/合并节点
@@ -704,8 +723,12 @@ define([
             postal.publish({
                 channel: "Tree",
                 topic: "node.detail",
-                data: _.cloneDeep(d)
+                data: {
+                    event: d3.event,
+                    node:  _.cloneDeep(d)
+                }
             });
+
             d3.event.stopPropagation();
         }
 
