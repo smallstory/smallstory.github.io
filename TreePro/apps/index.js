@@ -19,7 +19,7 @@ define([
         template: view,
         replace: false,
 		data: {
-			aciveView: "app-test"
+			aciveView: "app-tree"
 		},
 		components: {
 			appTree: app_tree,
