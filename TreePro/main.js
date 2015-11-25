@@ -15,6 +15,11 @@ require.config({
 		"app_tree/model": "apps/app_tree/model",
 		"app_tree/style": "apps/app_tree/style",
 		"app_tree/view": "apps/app_tree/view.html",
+
+		"app_test": "apps/app_test/index",
+		"app_test/model": "apps/app_test/model",
+		"app_test/style": "apps/app_test/styles",
+		"app_test/view": "apps/app_test/view.html", 
 		
 		// components
 		"component/tree": "component/tree/tree",

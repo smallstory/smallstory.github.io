@@ -5,11 +5,13 @@ require(["less!apps/style"])
 define([
 	"text!apps/view", "apps/model",
 	"jquery", "vue",
-	"app_tree"
+	"app_tree",
+	"app_test"
 ], function (
 	view, model,
 	$, Vue,
-	app_tree
+	app_tree,
+	app_test
 ) {
 
 	new Vue({
@@ -17,10 +19,11 @@ define([
         template: view,
         replace: false,
 		data: {
-			aciveView: "app-tree"
+			aciveView: "app-test"
 		},
 		components: {
-			appTree: app_tree
+			appTree: app_tree,
+			appTest: app_test
 		},
 
 		methods: {
